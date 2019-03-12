@@ -53,22 +53,23 @@
 
             </form>
 
-            <div class="row">
+            <div class="row" id="content-row">
                 <h3>All Products</h3>
 				<?php $totalVal = 0; ?>
                 @if(count($data) > 0)
-                    @foreach($data as $value)
-                        <h5>
-                            Name: {{ $value['name'] }}
-                            Quantity: {{ $value['quantity'] }}
-                            Price: {{ $value['price'] }}
-                            Date Submitted : {{ date('d F Y, h:i:s A',strtotime($value['datetime_submitted'])) }}
-                            Total Value : {{ $value['total_value'] }}
-                            <?php $totalVal += $value['total_value'] ; ?>
-                        </h5>
-                    @endforeach
-                    <p> <b> SumTotal: <?php echo $totalVal; ?> </b> </p>
-                    <br>
+                    <div id="content-product">
+                        @foreach($data as $value)
+                            <h5>
+                                Name: {{ $value['name'] }}
+                                Quantity: {{ $value['quantity'] }}
+                                Price: {{ $value['price'] }}
+                                Date Submitted : {{ date('d F Y, h:i:s A',strtotime($value['datetime_submitted'])) }}
+                                Total Value : {{ $value['total_value'] }}
+                                <?php $totalVal += $value['total_value'] ; ?>
+                            </h5>
+                        @endforeach
+                    </div>
+                    <p class="strong" id="content-total"> SumTotal: <?php echo $totalVal; ?> </p>
                 @endif
             </div>
         </div>
@@ -101,10 +102,29 @@
                     success: function(result){
                         if(result.success) {
 							swal("Good job!", "You added a product!", "success");							
-							var data = result.message;
-							console.log(data);
+							var response = result.message;
+							console.log(response);
 							//Append Data
+                            var data = "<h5> Name: " + response.name +
+                                " Quantity: " + response.quantity + " Price: " + response.price +
+                                 " Date Submitted :" + response.datetime_submitted +
+                                " Total Value: "+ response.total_value+" </h5>";
 
+                            var myDiv = $("#content-product");
+
+                            if( myDiv<=0 ){
+                                var html = "<div id='content-product'> " + data + " </div>";
+                                $("div#content-row").append(html)
+                                alert($("div#content-row"));
+                            }else {
+                                $("#content-product").append(data);
+                                //Update Sum total
+                                var prevSumTotal =  $("#content-total").text().trim().split(" ");
+                                var prevSumTotalScore = prevSumTotal[1];
+                                var newSumTotal = parseInt(prevSumTotalScore)+ response.total_value;
+                                console.log(newSumTotal);
+                                $("#content-total").text("SumTotal: "+newSumTotal);
+                            }
                         } else {                           
 							swal("Error!",result.message, "error");
                         }
