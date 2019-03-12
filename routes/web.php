@@ -15,6 +15,10 @@
 Route::resource('product', 'ProductController');
 
 Route::get('/', function () {
-    return view('welcome');
+    $json = Storage::disk('local')->get('data.json');
+    $json = json_decode($json, true);
+    return view('welcome', [
+        'data' => $json
+    ]);
 });
 

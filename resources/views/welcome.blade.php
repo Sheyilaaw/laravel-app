@@ -27,6 +27,7 @@
     </head>
     <body>
         <div class="container">
+
             <div class="text-center">
                     Add Product
             </div>
@@ -51,9 +52,17 @@
 
             <div class="row">
                 <h3>All Products</h3>
+                @if(count($data) > 0)
+                    @foreach($data as $value)
+                        Name: {{ $value['name'] }}
+                        Quantity: {{ $value['quantity'] }}
+                        Price: {{ $value['price'] }}
+                        Date Submitted : {{ date('d F Y, h:i:s A',strtotime($value['datetime_submitted'])) }}
+                        Total Value : {{$value['total_value']}}
+                    @endforeach
+                @endif
             </div>
         </div>
-
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -62,24 +71,11 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
         <script type="application/javascript">
-
-
-            function makeid() {
-                var text = "";
-                var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-                for (var i = 0; i < 5; i++)
-                    text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-                return text;
-            }
-
             $("#create-product").submit(function(event) {
                 /* Stop form from submitting normally */
                 event.preventDefault();
 
                 /* Get from elements values */
-
                 var values = $(this).serialize();
 
                 $.ajaxSetup({
@@ -88,14 +84,17 @@
                     }
                 });
                 jQuery.ajax({
-                    url: "{{ url('/product') }}",
+                    url: "{{ url('/product/') }}",
                     method: 'post',
                     data: values,
                     success: function(result){
-                        console.log(result);
+                        if(result.success) {
+                            alert('Saved Successfully');
+                        } else {
+                            alert(result.message);
+                        }
                     }
                 });
-
             });
 
         </script>
