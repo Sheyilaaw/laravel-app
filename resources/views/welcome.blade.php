@@ -18,7 +18,10 @@
                 font-family: 'Nunito', sans-serif;
                 font-weight: 200;
                 height: 100vh;
-                margin: 0;
+                margin-top: 50px;
+            }
+            h5{
+                font-size: 15px;
             }
         </style>
         <!-- Latest compiled and minified CSS -->
@@ -52,20 +55,28 @@
 
             <div class="row">
                 <h3>All Products</h3>
+				<?php $totalVal = 0; ?>
                 @if(count($data) > 0)
                     @foreach($data as $value)
-                        Name: {{ $value['name'] }}
-                        Quantity: {{ $value['quantity'] }}
-                        Price: {{ $value['price'] }}
-                        Date Submitted : {{ date('d F Y, h:i:s A',strtotime($value['datetime_submitted'])) }}
-                        Total Value : {{$value['total_value']}}
+                        <h5>
+                            Name: {{ $value['name'] }}
+                            Quantity: {{ $value['quantity'] }}
+                            Price: {{ $value['price'] }}
+                            Date Submitted : {{ date('d F Y, h:i:s A',strtotime($value['datetime_submitted'])) }}
+                            Total Value : {{ $value['total_value'] }}
+                            <?php $totalVal += $value['total_value'] ; ?>
+                        </h5>
                     @endforeach
+                    <p> <b> SumTotal: <?php echo $totalVal; ?> </b> </p>
+                    <br>
                 @endif
             </div>
         </div>
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		
+		<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
@@ -89,9 +100,13 @@
                     data: values,
                     success: function(result){
                         if(result.success) {
-                            alert('Saved Successfully');
-                        } else {
-                            alert(result.message);
+							swal("Good job!", "You added a product!", "success");							
+							var data = result.message;
+							console.log(data);
+							//Append Data
+
+                        } else {                           
+							swal("Error!",result.message, "error");
                         }
                     }
                 });
