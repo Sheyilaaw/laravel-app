@@ -1,6 +1,7 @@
 <?php
 
 /*
+ *
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
@@ -10,6 +11,8 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::resource('product', 'ProductController');
 
 Route::get('/', function () {
     return view('welcome');
